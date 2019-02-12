@@ -35,12 +35,12 @@ class RemoveCommand extends CompositeCommand {
      */
     @Override
     public boolean execute(User user, String label, List<String> args) {
+        Greenhouses addon = (Greenhouses)getAddon();
         // Check flag
-        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, Greenhouses.GREENHOUSES)).orElse(false)) {
+        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, addon.getFlag(getWorld()))).orElse(false)) {
             user.sendMessage("greenhouses.errors.no-rank");
             return false;
         }
-        Greenhouses addon = ((Greenhouses)this.getAddon());
         // Remove greenhouse if it exists
         if (!addon.getManager().getMap().getGreenhouse(user.getLocation()).map(gh -> {
             user.sendMessage("general.success");

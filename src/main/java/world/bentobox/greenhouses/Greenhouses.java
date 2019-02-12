@@ -1,7 +1,9 @@
 package world.bentobox.greenhouses;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,6 +11,7 @@ import org.bukkit.World;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
 import world.bentobox.bentobox.api.flags.Flag;
+import world.bentobox.bentobox.util.Util;
 import world.bentobox.greenhouses.managers.GreenhouseManager;
 import world.bentobox.greenhouses.managers.RecipeManager;
 import world.bentobox.greenhouses.ui.user.UserCommand;
@@ -23,7 +26,7 @@ public class Greenhouses extends Addon {
     private Settings settings;
     private RecipeManager recipes;
     private final List<World> activeWorlds = new ArrayList<>();
-    public final static Flag GREENHOUSES = new Flag.Builder("GREENHOUSE", Material.GREEN_STAINED_GLASS).build();
+    public Map<World, Flag> flags = new HashMap<>();
 
     /* (non-Javadoc)
      * @see world.bentobox.bentobox.api.addons.Addon#onEnable()
@@ -51,11 +54,14 @@ public class Greenhouses extends Addon {
             gm.getPlayerCommand().ifPresent(playerCmd -> new UserCommand(this, playerCmd));
             // Store active world
             activeWorlds.add(gm.getOverWorld());
+            // Register protection flag with BentoBox
+            Flag fl = new Flag.Builder(gm.getDescription().getName() + "_GREENHOUSE", Material.GREEN_STAINED_GLASS).setGameMode(gm).build();
+            getPlugin().getFlagsManager().registerFlag(fl);
+            flags.put(gm.getOverWorld(), fl);
         });
         // Register greenhouse manager
         this.registerListener(manager);
-        // Register protection flag with BentoBox
-        getPlugin().getFlagsManager().registerFlag(GREENHOUSES);
+
 
     }
 
@@ -97,4 +103,7 @@ public class Greenhouses extends Addon {
         return activeWorlds;
     }
 
+    public Flag getFlag(World world) {
+        return flags.get(Util.getWorld(world));
+    }
 }

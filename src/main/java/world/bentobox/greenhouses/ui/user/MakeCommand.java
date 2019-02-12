@@ -43,19 +43,20 @@ class MakeCommand extends CompositeCommand {
      */
     @Override
     public boolean execute(User user, String label, List<String> args) {
+        Greenhouses addon = (Greenhouses)getAddon();
         // Check flag
-        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, Greenhouses.GREENHOUSES)).orElse(false)) {
+        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, addon.getFlag(getWorld()))).orElse(false)) {
             user.sendMessage("greenhouses.errors.no-rank");
             return false;
         }
         // Find the physical the greenhouse
         Location location = user.getLocation().add(new Vector(0,1,0));
         // Check if there's a gh here already
-        if (((Greenhouses)this.getAddon()).getManager().getMap().getGreenhouse(location).isPresent()) {
+        if (addon.getManager().getMap().getGreenhouse(location).isPresent()) {
             user.sendMessage("greenhouses.commands.user.make.error.already");
             return false;
         }
-        GhResult result = ((Greenhouses)this.getAddon()).getManager().tryToMakeGreenhouse(location, null);
+        GhResult result = addon.getManager().tryToMakeGreenhouse(location, null);
 
         if (result.getResults().contains(GreenhouseResult.SUCCESS)) {
             // Success
