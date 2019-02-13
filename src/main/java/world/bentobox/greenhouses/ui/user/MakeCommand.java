@@ -45,7 +45,7 @@ class MakeCommand extends CompositeCommand {
     public boolean execute(User user, String label, List<String> args) {
         Greenhouses addon = (Greenhouses)getAddon();
         // Check flag
-        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, addon.getFlag(getWorld()))).orElse(false)) {
+        if (!getIslands().getIslandAt(user.getLocation()).map(i -> i.isAllowed(user, Greenhouses.GREENHOUSES)).orElse(false)) {
             user.sendMessage("greenhouses.errors.no-rank");
             return false;
         }
